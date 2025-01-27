@@ -4,7 +4,7 @@ from constants import *
 
 def main():
     pygame.init() 
-    game_time = pygame.time.Clock
+    game_time = pygame.time.Clock()
     delta_time = 0
     
      
