@@ -3,13 +3,21 @@ from constants import *
 from player import Player
 
 def main():
-    pygame.init() 
+    pygame.init()
+    
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
+    Player.containers = (updatable, drawable) 
+    
+
     lets_go = True
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     game_time = pygame.time.Clock()
     delta_time = 0
     player = Player(SCREEN_WIDTH / 2, SCREEN_WIDTH / 2)
-     
+    
+
+
     print("Starting asteroids!")
     print(f"Screen width: {SCREEN_WIDTH}")
     print(f"Screen height: {SCREEN_HEIGHT}")
@@ -19,10 +27,15 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
-            
+        
         screen.fill("black")
-        player.update(delta_time)
-        player.draw(screen)
+        
+        for item in updatable:
+            item.update(delta_time)   
+             
+        for item in drawable:
+            item.draw(screen)  
+             
         pygame.display.flip()
         
         delta_time = game_time.tick(60) / 1000
