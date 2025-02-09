@@ -4,7 +4,7 @@ from constants import *
 from shot import Shot
 
 class Player(CircleShape):
-    firerate = 0 
+    attack_timer = 0 
     
     def __init__(self, x, y):
         super().__init__(x, y, PLAYER_RADIUS)
@@ -27,6 +27,10 @@ class Player(CircleShape):
         
     
     def update(self, delta_time):
+        self.key_handler(delta_time)
+        self.attack_timer_tick(delta_time)
+            
+    def key_handler(self, delta_time):
         keys = pygame.key.get_pressed()
 
         if keys[pygame.K_a]:
@@ -45,7 +49,20 @@ class Player(CircleShape):
         self.position += forward * PLAYER_SPEED * delta_time
         
     def shoot(self):
-        new_shot = Shot(self.position.x, self.position.y)
-        new_shot.velocity = pygame.Vector2(0, 1).rotate(self.rotation)
-        new_shot.velocity *= PLAYER_SHOT_SPEED        
+        if self.can_shoot():
+            _velocity = pygame.Vector2(0, 1).rotate(self.rotation) * PLAYER_SHOT_SPEED
+            Shot(self.position.x, self.position.y, _velocity)
+                            
+            self.reset_attack_cooldown()
+                
+    def can_shoot(self):
+        return self.attack_timer < 0
+    
+    
+    def reset_attack_cooldown(self):
+        self.attack_timer = PLAYER_SHOOT_COOLDOWN
+        
+    def attack_timer_tick(self, delta_time):
+        self.attack_timer -= delta_time
+    
     
